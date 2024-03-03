@@ -1,0 +1,42 @@
+import Joi from "joi";
+
+export const signUpValidator = Joi.object({
+    userName: Joi.string().required().min(5).max(255).messages({
+        "string.empty": "User không được để trống",
+        "any.required": "Username là bắt buộc!",
+        "string.min": "Username phải có ít nhất {#limit} ký tự",
+        "string.max": "Username phải dưới {#limit + 1} ký tự"
+    }),
+    email: Joi.string().required().email().messages({
+        "string.empty": "Email không được để trống",
+        "any.required": "Email là bắt buộc!",
+        "string.email": "Email không được định dạng"
+    }),
+    password: Joi.string().required().min(6).max(255).messages({
+        "string.empty": "Password không được để trống",
+        "any.required": "Password là bắt buộc!",
+        "string.min": "Password phải có ít nhất {#limit} ký tự",
+        "string.max": "Password phải dưới {#limit + 1} ký tự"
+    }),
+    confirmPassword: Joi.string().required().min(5).max(255).valid(Joi.ref("password")).messages({
+        "string.empty": "Confirm Password không được để trống",
+        "any.required": "Confirm Password là bắt buộc!",
+        "string.min": "Confirm Password phải có ít nhất {#limit} ký tự",
+        "string.max": "Confirm Password phải dưới {#limit + 1} ký tự",
+        "any.only": "Confirm Password không khớp với Password"
+    }),
+    role: Joi.string()
+});
+export const signInValidator = Joi.object({
+    email: Joi.string().required().email().messages({
+        "string.empty": "Email không được để trống",
+        "any.required": "Email là bắt buộc!",
+        "string.email": "Email không được định dạng"
+    }),
+    password: Joi.string().required().min(6).max(255).messages({
+        "string.empty": "Password không được để trống",
+        "any.required": "Password là bắt buộc!",
+        "string.min": "Password phải có ít nhất {#limit} ký tự",
+        "string.max": "Password phải dưới {#limit + 1} ký tự"
+    }),
+});
