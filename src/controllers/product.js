@@ -3,6 +3,7 @@ import Category from '../models/Category.js';
 import product from '../models/Product.js';
 import Product from '../models/Product.js';
 import { productValid } from '../validation/product.js';
+import { uploadImages } from './images.js';
 export const getList = async (req, res) => {
 
     try {
@@ -59,34 +60,45 @@ export const getDetail = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-
+    console.log(req.files);
     try {
         const { error } = productValid.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
-        const data = await Product.create(req.body)
-        if (!data) {
+        const images = []
+        for(let image of req.files) {
+        const item = {path:image.path,id:image.filename}
+        images.push(item);
+        }
+        const data = {...req.body,images:images}
+        const response = await Product.create(data)
+        if (!response) {
             return res.status(404).json({
                 message: "Khong them duoc product"
             });
         }
+        // Tải ảnh lên Cloudinary
+        // const imageUrl = await uploadImages(req.body.imagePath);
+        //  // Cập nhật trường imageUrl của sản phẩm
+        //  data.imageUrl = imageUrl;
+        //  await data.save();
 
-        const updateCategory = await Category.findByIdAndUpdate(data.categoryId, {
-            $addToSet: {
-                products: data._id
-            }
-        })
+        // const updateCategory = await Category.findByIdAndUpdate(data.categoryId, {
+        //     $addToSet: {
+        //         products: data._id
+        //     }
+        // })
 
-        if (!updateCategory) {
-            return res.status(404).json({
-                message: "Update category not found"
-            })
-        }
+        // if (!updateCategory) {
+        //     return res.status(404).json({
+        //         message: "Update category not found"
+        //     })
+        // }
 
         return res.status(200).json({
             message: "Tao san pham thanh cong",
-            products: data
+            products: response
         })
 
     } catch (error) {
@@ -117,6 +129,12 @@ export const update = async (req, res) => {
             })
 
         }
+         // Tải ảnh lên Cloudinary
+         const imageUrl = await uploadImage(req.body.imagePath);
+
+         // Cập nhật trường imageUrl của sản phẩm
+         product.imageUrl = imageUrl;
+         await product.save();
         const updateCategory = await Category.findByIdAndUpdate(product.categoryId, {
             $addToSet: {
                 products: product._id

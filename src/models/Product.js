@@ -5,28 +5,37 @@ const productSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            require:true,
-            minLeght:3
+            require: true,
+            minLeght: 3
         },
-        price:{
+        price: {
             type: Number,
-            require:true,
-            minLeght:1
+            require: true,
+            minLeght: 1
         },
         description: {
             type: String,
-            require:true,
+            require: true,
 
         },
-        categoryId:{
+        categoryId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref:"Category",
-            required:true
-        }
-    },{
-        timestamps: true,
-        versionKey:false,
-    });
+            ref: "Category",
+            required: true
+        },
+        images:[
+            {
+                path:{
+                    type: String,
+                    
+                }
+            }
+        ]
 
-    productSchema.plugin(mongoosePaginate)
+    }, {
+    timestamps: true,
+    versionKey: false,
+});
+
+productSchema.plugin(mongoosePaginate)
 export default mongoose.model("Product", productSchema);

@@ -9,7 +9,7 @@ export const uploadImages = async (req, res) => {
 
         for (let image of images) {
             const results = await cloudinary.uploader.upload(image);
-            console.log(results);
+           
             uploadedImages.push({
                 url: results.secure_url,
                 publicId: results.public_id
@@ -30,7 +30,8 @@ export const uploadImages = async (req, res) => {
 export const removeImages = async (req, res) => {
     try {
         const publicId = req.params.public_id;
-        results = await cloudinary.uploader.destroy(publicId)
+      const results = await cloudinary.uploader.destroy(publicId)
+      
         if(results.result === "not found"){
             throw new Error("Delete images failed")
         }
