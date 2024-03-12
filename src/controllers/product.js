@@ -59,8 +59,7 @@ export const getDetail = async (req, res) => {
 
 export const create = async (req, res) => {
 
-const image = req.file
-console.log(image);
+    const image = req.file
     try {
         const { error } = productValid.validate(req.body);
         if (error) {
