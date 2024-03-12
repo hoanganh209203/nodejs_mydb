@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 const productSchema = new mongoose.Schema(
-    {
+     {
         name: {
             type: String,
             require: true,
@@ -23,14 +23,14 @@ const productSchema = new mongoose.Schema(
             ref: "Category",
             required: true
         },
-        images:[
+        images:
             {
                 path:{
                     type: String,
                     
                 }
             }
-        ]
+        
 
     }, {
     timestamps: true,

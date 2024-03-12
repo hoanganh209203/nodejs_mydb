@@ -13,26 +13,24 @@ export const getList = async (req, res) => {
             _sort = "createAt",
             _order = "asc" } = req.query
 
-            const options = {
-                page : _page,
-                limit : _limit,
-                sort:{
-                    [_sort]:_order === "asc" ? 1 : -1
-                }
-               
-            };
+        const options = {
+            page: _page,
+            limit: _limit,
+            sort: {
+                [_sort]: _order === "asc" ? 1 : -1
+            }
 
-            const data = await Product.paginate({},options)
-            console.log(data);
-        if (!data.docs || data.docs.length === 0) {
+        };
+
+        const data = await Product.paginate({}, options)
+        if (!data || data.length === 0) {
             return res.status(400).json({
                 message: "khong tim thay san pham"
             });
         }
-        return res.status(200).json({
-            message: "Lay danh sach san pham thanh cong",
-            datas: data
-        });
+        return res.status(200).json(
+            data
+        );
     } catch (error) {
         res.status(500).json({
             message: "Loi server"
@@ -60,18 +58,15 @@ export const getDetail = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-    console.log(req.files);
+
+const image = req.file
+console.log(image);
     try {
         const { error } = productValid.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
-        const images = []
-        for(let image of req.files) {
-        const item = {path:image.path,id:image.filename}
-        images.push(item);
-        }
-        const data = {...req.body,images:images}
+        const data = { ...req.body, images: { path: image.path, id: image.filename } }
         const response = await Product.create(data)
         if (!response) {
             return res.status(404).json({
@@ -129,12 +124,12 @@ export const update = async (req, res) => {
             })
 
         }
-         // Tải ảnh lên Cloudinary
-         const imageUrl = await uploadImage(req.body.imagePath);
+        // Tải ảnh lên Cloudinary
+        const imageUrl = await uploadImage(req.body.imagePath);
 
-         // Cập nhật trường imageUrl của sản phẩm
-         product.imageUrl = imageUrl;
-         await product.save();
+        // Cập nhật trường imageUrl của sản phẩm
+        product.imageUrl = imageUrl;
+        await product.save();
         const updateCategory = await Category.findByIdAndUpdate(product.categoryId, {
             $addToSet: {
                 products: product._id
