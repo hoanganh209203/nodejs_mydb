@@ -102,6 +102,8 @@ export const create = async (req, res) => {
     }
 };
 export const update = async (req, res) => {
+    console.log(req.body);
+    console.log(123);
     const { error } = productValid.validate(
         req.body,
         {
